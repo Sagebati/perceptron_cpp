@@ -13,11 +13,11 @@ struct Pair{
 
 void randomizeVector(boost::numeric::ublas::vector<double> &vector);
 vector<double> computeeNewWeight(vector<double> w,double n,int (*fSeuil)(double),vector<double> x);
-double* getCoordPython();
+double* funcPerc();
 
 int main() {
 
-    double* hey = getCoordPython();
+    double* hey = funcPerc();
     for(int i=0;i<3;i++){
         std::cout<<*(hey+i)<<std::endl;
     }
@@ -25,12 +25,19 @@ int main() {
     return 0;
 }
 
+/**
+ * Générateur de droite 2D on lui passe un vecteur, et une valuer
+ * et il retourne la valeur en fonction du vecteur
+ * @param vecDroite
+ * @param x
+ * @return
+ */
+double f(vector<double> vecDroite, double x){ //vecteur
+    return (vecDroite[1]*x)/-vecDroite[2];
+};
 
-double f(vector<double> vecDroite, double x){
-        return (vecDroite[1]*x)/vecDroite[2];
-    };
+double* funcPerc(){
 
-double* getCoordPython(){
     std::vector<Pair> ensApprentissage;
 
 
@@ -38,8 +45,12 @@ double* getCoordPython(){
         return point[1] - f(w,point[0])<0? -1:1; // si le point est au dessus on renvoie 1
     };
 
+    int (*seuilPondere)(double) = [](double n){
+        return n > 0? 1:-1;
+    };
 
-    double points[6][2] = {
+
+    double const points[6][2] = {
             {-2,1},
             {1,1},
             {1.5,-0.5},
@@ -71,7 +82,9 @@ double* getCoordPython(){
     w[0] = 0;
     w[1] = 1;
     w[2] = 0.5;
-//    randomizeVector(w);
+ //   randomizeVector(w);
+
+//    std::cout<< seuil(w,ensApprentissage[0].point);
 
     int nbrBoucles  =0;
     do {
@@ -80,14 +93,20 @@ double* getCoordPython(){
         for (Pair p : ensApprentissage) {
             vector<double> x = p.point;
             x.resize(3, true);
-            x.insert_element(0, 1);
-            //std::cout << "w:" << w << " x:" << x << std::endl;
+            x[2] = x[1];
+            x[1] = x[0];
+            x[0]= 1;
+            std::cout<<x<<std::endl;
+//            x.insert_element(0, 1);
+           std::cout << "w:" << w << " x:" << x << std::endl;
             double sommePond = inner_prod(w, x);
             //std::cout << "some pond:" << sommePond << std::endl;
-            if (seuil(w,p.point) != p.resEspected) {
+            int  s = seuil(w,p.point);
+//            int s = seuilPondere(sommePond);
+            if (s != p.resEspected) {
 
                 w = w + (x * (n * p.resEspected)); // on réajuste le w
-                std::cout <<"w: "<< w <<"seuil: "<<seuil<< std::endl;
+
             } else {
                 i++;
             }
