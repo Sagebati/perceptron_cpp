@@ -1,27 +1,75 @@
 #include <iostream>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/core.hpp>
+#include <cmath>
 #include<boost/numeric/ublas/vector.hpp>
+#include<boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/operations.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <random>
-#include <map>
+#include "reader.hpp"
+#include "NeuralNetwork.hpp"
 
-using namespace boost::numeric::ublas;
+using namespace cv;
+using namespace boost::numeric;
+using namespace std;
 
-struct Pair{
-    vector<double> point;
-    int resEspected;
+
+
+void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix);
+
+double (*sigmoide)(double) = [](double x){
+    return 1/(1+exp(-x));
 };
 
-void randomizeVector(boost::numeric::ublas::vector<double> &vector);
-vector<double> computeeNewWeight(vector<double> w,double n,int (*fSeuil)(double),vector<double> x);
-double* funcPerc();
+double (*seuil)(double) = sigmoide;
+
+
+
+ublas::vector<double>* imageToVector(cv::Mat const &mat, size_t const nbrPixels){
+    ublas::vector<double> * v = new ublas::vector<double>(nbrPixels);
+    for(size_t i=0;i<nbrPixels;i++){
+        v->insert_element(i,(double)mat.at<unsigned char>(i));
+    }
+    return v;
+}
 
 int main() {
+    using namespace boost::numeric::ublas;
 
-    double* hey = funcPerc();
-    for(int i=0;i<3;i++){
-        std::cout<<*(hey+i)<<std::endl;
+    string filename = "res/train-images-idx3-ubyte";
+    int number_of_images = 10000;
+    int image_size = 28 * 28;
+
+    //read MNIST iamge into OpenCV Mat vector
+    std::vector<cv::Mat> vec;
+    read_Mnist(filename, vec);
+    std::vector<double> vec_labels;
+    read_Mnist_Label("res/train-labels-idx1-ubyte", vec_labels);
+
+//    cout<<vec.size()<<endl;
+//    cv::imshow("1st", vec[0]);
+//    cv::waitKey();
+
+
+    NeuralNetwork nn(image_size,0,9,sigmoide);
+    std::vector<ublas::vector<double>*> vecteurEntres;
+    for(cv::Mat m : vec){
+        vecteurEntres.push_back(imageToVector(m,image_size));
     }
-    delete(hey);
+    cout<<*vecteurEntres[0]<<endl;
+//    cout<<"[";
+//    for(double const &item:vec_labels ){
+//        cout<<item<<",";
+//    }
+//    cout<<"]"<<endl;
+    for (ublas::vector<double> *e : vecteurEntres){
+        cout<<nn.propager(*e)<<endl;
+    }
+
+
+
     return 0;
 }
 
@@ -36,97 +84,21 @@ double f(vector<double> vecDroite, double x){ //vecteur
     return (vecDroite[1]*x)/-vecDroite[2];
 };
 
-double* funcPerc(){
-
-    std::vector<Pair> ensApprentissage;
-
-
-    int (*seuil)(vector<double>,vector<double>)= [](vector<double> w,vector<double> point) {
-        return point[1] - f(w,point[0])<0? -1:1; // si le point est au dessus on renvoie 1
-    };
-
-    int (*seuilPondere)(double) = [](double n){
-        return n > 0? 1:-1;
-    };
-
-
-    double const points[6][2] = {
-            {-2,1},
-            {1,1},
-            {1.5,-0.5},
-            {-2,-1},
-            {-1,-1.5},
-            {2,-2}
-    };
-
-
-    for(int i=0;i<6;i++) {
-        if (i < 3) {
-            vector<double> v(2);
-            v[0] = points[i][0];
-            v[1] = points[i][1];
-            Pair   ele = {v,1};
-            ensApprentissage.push_back(ele);
-        }else{
-            vector<double> v(2);
-            v[0] = points[i][0];
-            v[1] = points[i][1];
-            Pair  ele = {v,-1};
-            ensApprentissage.push_back(ele);
-        }
-    }
-
-    const double n = 0.2;
-    vector<double> w(3);
-    int i = 0;
-    w[0] = 0;
-    w[1] = 1;
-    w[2] = 0.5;
- //   randomizeVector(w);
-
-//    std::cout<< seuil(w,ensApprentissage[0].point);
-
-    int nbrBoucles  =0;
-    do {
-        i=0;
-        std::cout<<"nbr boucles:"<<nbrBoucles++<<std::endl;
-        for (Pair p : ensApprentissage) {
-            vector<double> x = p.point;
-            x.resize(3, true);
-            x[2] = x[1];
-            x[1] = x[0];
-            x[0]= 1;
-            std::cout<<x<<std::endl;
-//            x.insert_element(0, 1);
-           std::cout << "w:" << w << " x:" << x << std::endl;
-            double sommePond = inner_prod(w, x);
-            //std::cout << "some pond:" << sommePond << std::endl;
-            int  s = seuil(w,p.point);
-//            int s = seuilPondere(sommePond);
-            if (s != p.resEspected) {
-
-                w = w + (x * (n * p.resEspected)); // on réajuste le w
-
-            } else {
-                i++;
-            }
-        }
-    }while (i!=6);
-
-    double * res = new double[3];
-    double * it = res;
-    for(double d:w){
-        *(it++)=d;
-    }
-    return res;
-}
-
-void randomizeVector(boost::numeric::ublas::vector<double> &vector){
+/**
+ * Fonction qui permet d'initialiser une matrice a des poids aléatoires
+ * entre -1 et 1
+ * @param vector à initialiser
+ */
+void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix){
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(-1,1);
 
-    for (double &i : vector) {
-        i = dist(mt);
+    for(size_t i=0;i<matrix.size1();i++){
+        for(size_t j=0;j<matrix.size2();j++){
+            matrix(i,j) = dist(mt);
+        }
     }
 }
+
+
