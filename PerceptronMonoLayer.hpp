@@ -1,0 +1,14 @@
+//
+// Created by sam on 04/12/17.
+//
+
+#ifndef PERCEPTRON_PERCEPTRONMONOLAYER_HPP
+#define PERCEPTRON_PERCEPTRONMONOLAYER_HPP
+
+
+class PerceptronMonoLayer {
+
+};
+
+
+#endif //PERCEPTRON_PERCEPTRONMONOLAYER_HPP
