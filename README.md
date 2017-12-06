@@ -23,7 +23,7 @@ Dependencies
 Compiling
 -
 For compiling just do 
-Make on the project folder
+cmake . && make
 
 
 
