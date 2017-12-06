@@ -3,5 +3,5 @@ project(perceptron)
 
 set(CMAKE_CXX_STANDARD 11)
 find_package( OpenCV REQUIRED )
-add_executable(perceptron main.cpp util/util.cpp util/util.h reader.cpp reader.hpp NeuralNetwork.cpp NeuralNetwork.hpp Neuron.cpp Neuron.hpp PerceptronMonoLayer.cpp PerceptronMonoLayer.hpp)
+add_executable(perceptron main.cpp reader.cpp reader.hpp NeuralNetwork.cpp NeuralNetwork.hpp Neuron.cpp Neuron.hpp PerceptronMonoLayer.cpp PerceptronMonoLayer.hpp)
 target_link_libraries( perceptron ${OpenCV_LIBS} )
