@@ -15,6 +15,11 @@ Dependencies
 
 > Ex: pacman -S opencv (archlinux based)
 
+Compiling
+-
+For compiling just do 
+Make on the project folder
+
 
 
 

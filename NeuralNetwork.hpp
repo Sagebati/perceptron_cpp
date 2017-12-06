@@ -40,7 +40,7 @@ private:
     /**
      * vecteur de matrices de poids
      */
-    std::vector<boost::numeric::ublas::matrix<double>*> neuralNetwork;
+    std::vector<boost::numeric::ublas::matrix<double> *> neuralNetwork;
 
     /**
      * function seuil
@@ -66,13 +66,15 @@ private:
     }
 
     void initMatrix();
+
     void initMatrix(double init);
 
     boost::numeric::ublas::vector<double>
     propagerEtape(const boost::numeric::ublas::vector<double> &e,
                   const boost::numeric::ublas::matrix<double> &m);
+
     void
-    propagerErreur(boost::numeric::ublas::vector<double> sortie,double target);
+    propagerErreur(boost::numeric::ublas::vector<double> sortie, double target);
 };
 
 #endif //PERCEPTRON_NEURALNETWORK_HPP

@@ -1,36 +1,40 @@
 #include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/core.hpp>
-#include <cmath>
 #include<boost/numeric/ublas/vector.hpp>
 #include<boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operations.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <random>
 #include "reader.hpp"
-#include "NeuralNetwork.hpp"
+#include "PerceptronMonoLayer.hpp"
 
 using namespace cv;
 using namespace boost::numeric;
 using namespace std;
 
 
-
 void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix);
 
-double (*sigmoide)(double) = [](double x){
-    return 1/(1+exp(-x));
+void randomizeVector(boost::numeric::ublas::vector<double> &vect);
+
+double (*sigmoide)(double) = [](double x) {
+    return 1 / (1 + exp(-x));
 };
 
-double (*seuil)(double) = sigmoide;
+double supa0(double x) {
+    return x > 0 ? 1 : 0;
+};
+
+double (*seuil)(double) = supa0;
 
 
-
-ublas::vector<double>* imageToVector(cv::Mat const &mat, size_t const nbrPixels){
-    ublas::vector<double> * v = new ublas::vector<double>(nbrPixels);
-    for(size_t i=0;i<nbrPixels;i++){
-        v->insert_element(i,(double)mat.at<unsigned char>(i));
+ublas::vector<double> *imageToVector(cv::Mat const &mat, size_t const nbrPixels) {
+    auto *v = new ublas::vector<double>(nbrPixels);
+    for (size_t i = 0; i < nbrPixels; i++) {
+        auto a = (double) mat.at<unsigned char>(i);
+        a = a > 0 ? 1 : 0;
+        v->insert_element(i, a);
     }
     return v;
 }
@@ -39,34 +43,53 @@ int main() {
     using namespace boost::numeric::ublas;
 
     string filename = "res/train-images-idx3-ubyte";
-    int number_of_images = 10000;
-    int image_size = 28 * 28;
+    size_t image_size = 28 * 28;
 
-    //read MNIST iamge into OpenCV Mat vector
-    std::vector<cv::Mat> vec;
-    read_Mnist(filename, vec);
+    std::vector<cv::Mat> vec_entrees;
     std::vector<double> vec_labels;
+    std::vector<cv::Mat> vec_entrees_test;
+    std::vector<double> vec_labels_test;
+    read_Mnist(filename, vec_entrees);
     read_Mnist_Label("res/train-labels-idx1-ubyte", vec_labels);
+    read_Mnist("res/t10k-images-idx3-ubyte", vec_entrees_test);
+    read_Mnist_Label("res/t10k-labels-idx1-ubyte", vec_labels_test);
 
-//    cout<<vec.size()<<endl;
-//    cv::imshow("1st", vec[0]);
+//    cout<<vec_entrees.size()<<endl;
+//    cv::imshow("1st", vec_entrees[0]);
 //    cv::waitKey();
 
+    std::vector<Image> vecteurEntres;
+    for (cv::Mat &m : vec_entrees) {
+        Image image = {&m, imageToVector(m, image_size)};
+        vecteurEntres.push_back(image);
+    }
+    std::vector<Image> vecteurEnTest;
+    for (cv::Mat &m : vec_entrees_test) {
+        Image image = {&m, imageToVector(m, image_size)};
+        vecteurEnTest.push_back(image);
+    }
+//    cout << *vecteurEntres[0].e << endl;
 
-    NeuralNetwork nn(image_size,0,9,sigmoide);
-    std::vector<ublas::vector<double>*> vecteurEntres;
-    for(cv::Mat m : vec){
-        vecteurEntres.push_back(imageToVector(m,image_size));
+
+
+    std::vector<Neuron> *neuronnes = new std::vector<Neuron>;
+    for (int i = 0; i < 9; ++i) {
+        ublas::vector<double> weigthN(image_size);
+        randomizeVector(weigthN);
+        neuronnes->emplace_back(weigthN, seuil);
     }
-    cout<<*vecteurEntres[0]<<endl;
-//    cout<<"[";
-//    for(double const &item:vec_labels ){
-//        cout<<item<<",";
-//    }
-//    cout<<"]"<<endl;
-    for (ublas::vector<double> *e : vecteurEntres){
-        cout<<nn.propager(*e)<<endl;
+
+
+    PerceptronMonoLayer perceptronMonoLayer(*neuronnes, vecteurEntres, vec_labels);
+    perceptronMonoLayer.apprendre();
+    cout << "Fini d'apprendre" << endl;
+    cout << "lancement du test" << endl;
+    perceptronMonoLayer.tester(vecteurEnTest, vec_labels_test);
+
+    for (Image toDel : vecteurEntres) {
+        delete (toDel.e);
     }
+
 
 
 
@@ -80,8 +103,8 @@ int main() {
  * @param x
  * @return
  */
-double f(vector<double> vecDroite, double x){ //vecteur
-    return (vecDroite[1]*x)/-vecDroite[2];
+double f(vector<double> vecDroite, double x) { //vecteur
+    return (vecDroite[1] * x) / -vecDroite[2];
 };
 
 /**
@@ -89,15 +112,30 @@ double f(vector<double> vecDroite, double x){ //vecteur
  * entre -1 et 1
  * @param vector à initialiser
  */
-void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix){
+void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix) {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(-1,1);
+    std::uniform_real_distribution<double> dist(-1, 1);
 
-    for(size_t i=0;i<matrix.size1();i++){
-        for(size_t j=0;j<matrix.size2();j++){
-            matrix(i,j) = dist(mt);
+    for (size_t i = 0; i < matrix.size1(); i++) {
+        for (size_t j = 0; j < matrix.size2(); j++) {
+            matrix(i, j) = dist(mt);
         }
+    }
+}
+
+/**
+ * Fonction qui permet d'initialiser un vecteur a des poids aléatoires
+ * entre -1 et 1
+ * @param vect à initialiser
+ */
+void randomizeVector(boost::numeric::ublas::vector<double> &vect) {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(-1, 1);
+
+    for (size_t i = 0; i < vect.size(); i++) {
+        vect(i) = dist(mt);
     }
 }
 

@@ -3,8 +3,6 @@
 //
 
 #include "NeuralNetwork.hpp"
-#include <iostream>
-#include <boost/numeric/ublas/matrix.hpp>
 
 using namespace boost::numeric;
 using namespace std;
@@ -18,8 +16,7 @@ NeuralNetwork::NeuralNetwork(const size_t nbrNeuronnes, const size_t couches, co
     }
     this->neuralNetwork.push_back(new ublas::matrix<double>(nbrNeuronnes, nbrNeuronnesOutput));
     this->fonctSeuil = funSeuil;
-    for (ublas::matrix<double> *m : neuralNetwork)
-        NeuralNetwork::initMatrix(*m);
+    initMatrix();
 }
 /**
  * Copy constructor
@@ -83,7 +80,7 @@ void NeuralNetwork::initMatrix(double init) {
 
 void NeuralNetwork::propagerErreur(boost::numeric::ublas::vector<double> sortie, double target) {
     double gradient = 0.05;
-    //TODO à implementer
+
 }
 
 
