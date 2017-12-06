@@ -1,0 +1,2 @@
+Implement NeuralNetwork
+Use a multi layer for improving performence
