@@ -31,11 +31,15 @@ public:
     void apprendre();
 
     void tester(std::vector<Image> const &e, std::vector<double> const &labels);
+    bool tester(Image const &e,double label);
+
+    void addBiais(size_t nbrBiais);
 };
 
 std::vector<double> intToVec(size_t x);
 
 std::vector<double> intToVec(double x);
 
+size_t getIdMax(std::vector<double> output);
 
 #endif //PERCEPTRON_PERCEPTRONMONOLAYER_HPP

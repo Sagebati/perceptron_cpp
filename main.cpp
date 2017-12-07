@@ -26,6 +26,10 @@ double supa0(double x) {
     return x > 0 ? 1 : 0;
 };
 
+double sup255(double x ){
+    return x > 256./2. ? 1:0;
+}
+
 double (*seuil)(double) = supa0;
 
 
@@ -33,7 +37,7 @@ ublas::vector<double> *imageToVector(cv::Mat const &mat, size_t const nbrPixels)
     auto *v = new ublas::vector<double>(nbrPixels);
     for (size_t i = 0; i < nbrPixels; i++) {
         auto a = (double) mat.at<unsigned char>(i);
-        a = a > 0 ? 1 : 0;
+        a = a>0?1:0;
         v->insert_element(i, a);
     }
     return v;
@@ -72,8 +76,8 @@ int main() {
 
 
 
-    std::vector<Neuron> *neuronnes = new std::vector<Neuron>;
-    for (int i = 0; i < 9; ++i) {
+    auto *neuronnes = new std::vector<Neuron>;
+    for (int i = 0; i < 10; ++i) {
         ublas::vector<double> weigthN(image_size);
         randomizeVector(weigthN);
         neuronnes->emplace_back(weigthN, seuil);
@@ -89,6 +93,13 @@ int main() {
     for (Image toDel : vecteurEntres) {
         delete (toDel.e);
     }
+
+    cv::Mat imageTest = imread("res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
+
+    Image im = {&imageTest,imageToVector(imageTest,image_size)};
+
+    cout<<"Essai perso (6):"<<
+    perceptronMonoLayer.tester(im,6.)<<endl;
 
 
 
@@ -132,7 +143,7 @@ void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix) {
 void randomizeVector(boost::numeric::ublas::vector<double> &vect) {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(-1, 1);
+    std::uniform_real_distribution<double> dist(0, 1);
 
     for (size_t i = 0; i < vect.size(); i++) {
         vect(i) = dist(mt);

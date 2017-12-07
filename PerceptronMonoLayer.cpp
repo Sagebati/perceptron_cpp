@@ -13,68 +13,66 @@ PerceptronMonoLayer::PerceptronMonoLayer(std::vector<Neuron> neuronnes, std::vec
 
 void PerceptronMonoLayer::apprendre() {
     size_t sizeEns = ensApprendtissage.size();
-    size_t i = 0;
+    size_t i = 0, j = 0;
     size_t correct;
     size_t incorrect;
-//    do {
-    correct = 0;
-    i = 0;
-    incorrect = 0;
-    for (Image const &image:ensApprendtissage) {
-        for (size_t in = 0; in < neuronnes.size(); ++in) {
-            double output = neuronnes[in].getOutput(*image.e);
-//                std::cout << "expected:" << lsExpected[i] << "n neuronne : " << in << " output : " << output;
-            if (intToVec(in) != intToVec(lsExpected[i])) {
-                incorrect++;
-                if (in == lsExpected[i]) {
-                    if (output == 1) {
-//                      std::cout << " correct";
-                    } else {
-//                      std::cout << " incorrect";
-                        neuronnes[in].correctWeitghs(*image.e, output, lsExpected[i]);
-                    }
-                } else {
-                    if (output == 0) {
-//                      std::cout << " correct";
-                    } else {
-//                      std::cout << " incorrect";
-                        neuronnes[in].correctWeitghs(*image.e, output, lsExpected[i]);
+    std::vector<double> succes_rates;
+    succes_rates.push_back(0.);
+    std::vector<double> outputs;
+    do {
+        correct = 0;
+        i = 0;
+        incorrect = 0;
+        for (Image const &image:ensApprendtissage) {
+            double expected = lsExpected[i];
+            for (auto &neuronne : neuronnes) {
+                double output = neuronne.getOutput(*image.e);
+                outputs.push_back(output);
+            }
+            auto vec_expected = intToVec(expected);
+            double outputInt = getIdMax(outputs);
+            auto vec_result = intToVec(outputInt);
+
+            if (vec_result == vec_expected) {
+                correct++;
+            } else {
+                for (int y = 0; y < vec_expected.size(); y++) {
+                    if (y == expected) {
+                        neuronnes[y].correctWeitghs(*image.e, vec_expected[y], outputs[y]);
                     }
                 }
-            } else {
-                correct++;
+                incorrect++;
             }
-//                std::cout << std::endl;
+            outputs.clear();
+            ++i;
         }
-//            std::cout << "fin de boucle" << std::endl;
-//            std::cout<<"nbr boucles"<<i<<std::endl;
-        ++i;
-//            std::cout<<"correct: "<<correct<<std::endl;
-//            std::cout<<"incorrect: "<<incorrect<<std::endl;
-    }
-    std::cout << "success rate: " << (correct * 1.0) / ensApprendtissage.size() * 100 << std::endl;
-//    } while (correct != (sizeEns * 9));
+        double succes_rate = (correct * 1.0) / ensApprendtissage.size() * 100;
+        succes_rates.push_back(succes_rate);
+        std::cout << "error rate: " << succes_rate << std::endl;
+    } while (succes_rates[++j] != succes_rates[j - 1]);
 }
 
 void PerceptronMonoLayer::tester(std::vector<Image> const &e, std::vector<double> const &labels) {
     size_t i = 0;
-    size_t correct;
-    size_t incorrect;
-    correct = 0;
-    i = 0;
-    incorrect = 0;
+    size_t correct = 0, incorrect = 0;
     for (Image const &image:e) {
-        for (size_t in = 0; in < neuronnes.size(); ++in) {
-            double output = neuronnes[in].getOutput(*image.e);
-            if (intToVec(in) != intToVec(labels[i])) {
-                incorrect++;
-            } else {
-                correct++;
-            }
-        }
+        if (tester(image, labels[i]))
+            correct++;
+        else
+            incorrect++;
+
         ++i;
     }
     std::cout << "success rate test: " << (correct * 1.0) / e.size() * 100 << std::endl;
+}
+
+bool PerceptronMonoLayer::tester(Image const &e, double const label) {
+    std::vector<double> neuroActives;
+    for (auto &neuronne : neuronnes) {
+        double output = neuronne.getOutput(*e.e);
+        neuroActives.push_back(output);
+    }
+    return (intToVec(getIdMax(neuroActives)) == intToVec(label));
 }
 
 
@@ -88,4 +86,15 @@ std::vector<double> intToVec(double x) {
     std::vector<double> res = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     res[x] = 1;
     return res;
+}
+
+size_t getIdMax(std::vector<double> output) {
+    size_t res;
+    double buff = -DBL_MAX;
+    for (size_t i = 0; i < output.size(); ++i) {
+        if (output[i] > buff) {
+            buff = output[i];
+            res = i;
+        }
+    }
 }
