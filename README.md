@@ -1,8 +1,6 @@
 # Perceptron_cpp
 Programm for a project in CS. Commentaries are on french, but i will try to change that on the future.
 
-actually I reach 90 of succes rate!
-
 > The objectif of this programm is to learn manuscrite writing from the mnist database.
 
 It is Cmake based.

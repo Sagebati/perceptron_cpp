@@ -12,7 +12,7 @@ Neuron::Neuron(const ublas::vector<double> &weights, double (*functionAct)(doubl
                                                                                       functionAct(functionAct) { this->gradient = 0.5; }
 
 /**
- * function that gives the output of the neuron oa entry given
+ * function that gives the output of the neuron on entry given
  * @param e vecotr of entrie
  * @return the output
  */
@@ -41,6 +41,16 @@ void Neuron::setFunctionAct(double (*functionAct)(double)) {
     Neuron::functionAct = functionAct;
 }
 
+bool equalsBlas(ublas::vector<double> const &a, ublas::vector<double> const &b) {
+    auto res = true;
+    for (int i = 0; i < a.size(); ++i) {
+        if (a[i] != b[i]) {
+            res = false;
+        }
+    }
+    return res;
+}
+
 /**
  * Function that correct weigth
  * @param e entries
@@ -52,6 +62,9 @@ void Neuron::correctWeitghs(ublas::vector<double> const &e, double const result,
         std::cout << "problem ici" << std::endl;
     }
     auto hey = weights + (e * (this->gradient * (expected - result)));
-//    std::cout<<" "<<(hey == weights)<<" "<<std::endl;
+//    std::cout<<" "<<(equalsBlas(hey, weights) ? "true":"false")<<" "<<std::endl;
     this->setWeights(weights + (e * (this->gradient * (expected - result))));
 }
+
+
+

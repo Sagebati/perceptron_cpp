@@ -102,6 +102,7 @@ int main() {
     perceptronMonoLayer.tester(im,6.)<<endl;
 
 
+    delete (neuronnes);
 
 
     return 0;
