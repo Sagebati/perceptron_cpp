@@ -65,12 +65,12 @@ void PerceptronMonoLayer::test(std::vector<Image> const &e, std::vector<double> 
 }
 
 bool PerceptronMonoLayer::test(Image const &e, double const label) {
-    std::vector<double> neuroActives;
+    std::vector<double> outputs;
     for (auto &neuronne : neuronnes) {
         double output = neuronne.getOutput(*e.e);
-        neuroActives.push_back(output);
+        outputs.push_back(output);
     }
-    return (intToVec(getIdMax(neuroActives)) == intToVec(label));
+    return (intToVec(getIdMax(outputs)) == intToVec(label));
 }
 
 
