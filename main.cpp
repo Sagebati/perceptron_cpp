@@ -1,8 +1,8 @@
 #include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include<boost/numeric/ublas/vector.hpp>
-#include<boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operations.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <random>
@@ -30,23 +30,25 @@ double sup255(double x ){
     return x > 256./2. ? 1:0;
 }
 
-double (*seuil)(double) = supa0;
+double (*seuil)(double) = sigmoide;
 
 
 ublas::vector<double> *imageToVector(cv::Mat const &mat, size_t const nbrPixels) {
     auto *v = new ublas::vector<double>(nbrPixels);
     for (size_t i = 0; i < nbrPixels; i++) {
         auto a = (double) mat.at<unsigned char>(i);
-        a = a>0?1:0;
+        a = sup255(a);
         v->insert_element(i, a);
     }
     return v;
 }
 
 int main() {
+
     using namespace boost::numeric::ublas;
 
-    string filename = "res/train-images-idx3-ubyte";
+
+    string filename = "../res/train-images-idx3-ubyte";
     size_t image_size = 28 * 28;
 
     std::vector<cv::Mat> vec_entrees;
@@ -54,27 +56,24 @@ int main() {
     std::vector<cv::Mat> vec_entrees_test;
     std::vector<double> vec_labels_test;
     read_Mnist(filename, vec_entrees);
-    read_Mnist_Label("res/train-labels-idx1-ubyte", vec_labels);
-    read_Mnist("res/t10k-images-idx3-ubyte", vec_entrees_test);
-    read_Mnist_Label("res/t10k-labels-idx1-ubyte", vec_labels_test);
+    read_Mnist_Label("../res/train-labels-idx1-ubyte", vec_labels);
+    read_Mnist("../res/t10k-images-idx3-ubyte", vec_entrees_test);
+    read_Mnist_Label("../res/t10k-labels-idx1-ubyte", vec_labels_test);
 
 //    cout<<vec_entrees.size()<<endl;
 //    cv::imshow("1st", vec_entrees[0]);
 //    cv::waitKey();
 
-    std::vector<Image> vecteurEntres;
+    std::vector<Image> vecTrain;
     for (cv::Mat &m : vec_entrees) {
         Image image = {&m, imageToVector(m, image_size)};
-        vecteurEntres.push_back(image);
+        vecTrain.push_back(image);
     }
-    std::vector<Image> vecteurEnTest;
+    std::vector<Image> vecTest;
     for (cv::Mat &m : vec_entrees_test) {
         Image image = {&m, imageToVector(m, image_size)};
-        vecteurEnTest.push_back(image);
+        vecTest.push_back(image);
     }
-//    cout << *vecteurEntres[0].e << endl;
-
-
 
     auto *neuronnes = new std::vector<Neuron>;
     for (int i = 0; i < 10; ++i) {
@@ -84,15 +83,12 @@ int main() {
     }
 
 
-    PerceptronMonoLayer perceptronMonoLayer(*neuronnes, vecteurEntres, vec_labels);
+    PerceptronMonoLayer perceptronMonoLayer(*neuronnes, vecTrain, vec_labels);
     perceptronMonoLayer.learn();
     cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
-    perceptronMonoLayer.test(vecteurEnTest, vec_labels_test);
+    perceptronMonoLayer.test(vecTest, vec_labels_test);
 
-    for (Image toDel : vecteurEntres) {
-        delete (toDel.e);
-    }
 
     cv::Mat imageTest = imread("res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
 
@@ -103,7 +99,12 @@ int main() {
 
 
     delete (neuronnes);
-
+    for (const Image &toDel : vecTrain) {
+        delete (toDel.e);
+    }
+    for(const Image &toDel : vecTrain){
+        delete(toDel.e);
+    }
 
     return 0;
 }

@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.9)
 project(perceptron)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package( OpenCV REQUIRED )
+find_package( Boost REQUIRED )
 add_executable(perceptron main.cpp reader.cpp reader.hpp NeuralNetwork.cpp NeuralNetwork.hpp Neuron.cpp Neuron.hpp PerceptronMonoLayer.cpp PerceptronMonoLayer.hpp)
 target_link_libraries( perceptron ${OpenCV_LIBS} )
+target_link_libraries( perceptron ${Boost_LIBS} )

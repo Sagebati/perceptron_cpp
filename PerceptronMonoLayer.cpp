@@ -47,7 +47,7 @@ void PerceptronMonoLayer::learn() {
         double succes_rate = (correct * 1.0) / ensApprendtissage.size() * 100;
         succes_rates.push_back(succes_rate);
         std::cout << "success rate:\n" << succes_rate << std::endl;
-    } while (succes_rates[++j] != succes_rates[j - 1] && j < 25);
+    } while (succes_rates[++j] != succes_rates[j - 1] && j < 2);
 }
 
 void PerceptronMonoLayer::test(std::vector<Image> const &e, std::vector<double> const &labels) {
@@ -87,7 +87,7 @@ std::vector<double> intToVec(double x) {
 }
 
 size_t getIdMax(std::vector<double> output) {
-    size_t res;
+    size_t res=0;
     double buff = -DBL_MAX;
     for (size_t i = 0; i < output.size(); ++i) {
         if (output[i] > buff) {
