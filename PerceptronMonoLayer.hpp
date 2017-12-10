@@ -28,12 +28,14 @@ private:
 public:
     PerceptronMonoLayer(std::vector<Neuron> neuronnes, std::vector<Image> ensApprentissage, std::vector<double> lsExpected);
 
-    void apprendre();
+    void learn();
 
-    void tester(std::vector<Image> const &e, std::vector<double> const &labels);
-    bool tester(Image const &e,double label);
+    void test(std::vector<Image> const &e, std::vector<double> const &labels);
 
-    void addBiais(size_t nbrBiais);
+    bool test(Image const &e, const double label);
+
+    // Later
+//    void addBiais(size_t nbrBiais);
 };
 
 std::vector<double> intToVec(size_t x);

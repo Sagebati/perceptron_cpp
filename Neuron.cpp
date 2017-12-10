@@ -9,7 +9,7 @@
 using namespace boost::numeric;
 
 Neuron::Neuron(const ublas::vector<double> &weights, double (*functionAct)(double)) : weights(weights),
-                                                                                      functionAct(functionAct) { this->gradient = 0.5; }
+                                                                                      functionAct(functionAct) { this->gradient = 0.05; }
 
 /**
  * function that gives the output of the neuron on entry given
@@ -52,17 +52,15 @@ bool equalsBlas(ublas::vector<double> const &a, ublas::vector<double> const &b) 
 }
 
 /**
- * Function that correct weigth
+ * Function that correct weigths
  * @param e entries
  * @param result result
  * @param expected result expected
  */
-void Neuron::correctWeitghs(ublas::vector<double> const &e, double const result, double const expected) {
+void Neuron::correctWeitghs(ublas::vector<double> const &e, double const expected, double const result) {
     if (weights.size() != e.size()) {
         std::cout << "problem ici" << std::endl;
     }
-    auto hey = weights + (e * (this->gradient * (expected - result)));
-//    std::cout<<" "<<(equalsBlas(hey, weights) ? "true":"false")<<" "<<std::endl;
     this->setWeights(weights + (e * (this->gradient * (expected - result))));
 }
 

@@ -11,7 +11,7 @@ PerceptronMonoLayer::PerceptronMonoLayer(std::vector<Neuron> neuronnes, std::vec
         : neuronnes(std::move(neuronnes)), ensApprendtissage(std::move(ensApprentissage)), lsExpected(std::move(lsExpected)) {}
 
 
-void PerceptronMonoLayer::apprendre() {
+void PerceptronMonoLayer::learn() {
     size_t sizeEns = ensApprendtissage.size();
     size_t i = 0, j = 0;
     size_t correct;
@@ -37,9 +37,7 @@ void PerceptronMonoLayer::apprendre() {
                 correct++;
             } else {
                 for (int y = 0; y < vec_expected.size(); y++) {
-                    if (y == expected) {
                         neuronnes[y].correctWeitghs(*image.e, vec_expected[y], outputs[y]);
-                    }
                 }
                 incorrect++;
             }
@@ -48,15 +46,15 @@ void PerceptronMonoLayer::apprendre() {
         }
         double succes_rate = (correct * 1.0) / ensApprendtissage.size() * 100;
         succes_rates.push_back(succes_rate);
-        std::cout << "error rate: " << succes_rate << std::endl;
-    } while (succes_rates[++j] != succes_rates[j - 1]);
+        std::cout << "success rate:\n" << succes_rate << std::endl;
+    } while (succes_rates[++j] != succes_rates[j - 1] && j < 25);
 }
 
-void PerceptronMonoLayer::tester(std::vector<Image> const &e, std::vector<double> const &labels) {
+void PerceptronMonoLayer::test(std::vector<Image> const &e, std::vector<double> const &labels) {
     size_t i = 0;
     size_t correct = 0, incorrect = 0;
     for (Image const &image:e) {
-        if (tester(image, labels[i]))
+        if (test(image, labels[i]))
             correct++;
         else
             incorrect++;
@@ -66,7 +64,7 @@ void PerceptronMonoLayer::tester(std::vector<Image> const &e, std::vector<double
     std::cout << "success rate test: " << (correct * 1.0) / e.size() * 100 << std::endl;
 }
 
-bool PerceptronMonoLayer::tester(Image const &e, double const label) {
+bool PerceptronMonoLayer::test(Image const &e, double const label) {
     std::vector<double> neuroActives;
     for (auto &neuronne : neuronnes) {
         double output = neuronne.getOutput(*e.e);
@@ -97,4 +95,5 @@ size_t getIdMax(std::vector<double> output) {
             res = i;
         }
     }
+    return res;
 }

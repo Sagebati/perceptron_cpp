@@ -85,10 +85,10 @@ int main() {
 
 
     PerceptronMonoLayer perceptronMonoLayer(*neuronnes, vecteurEntres, vec_labels);
-    perceptronMonoLayer.apprendre();
-    cout << "Fini d'apprendre" << endl;
+    perceptronMonoLayer.learn();
+    cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
-    perceptronMonoLayer.tester(vecteurEnTest, vec_labels_test);
+    perceptronMonoLayer.test(vecteurEnTest, vec_labels_test);
 
     for (Image toDel : vecteurEntres) {
         delete (toDel.e);
@@ -98,8 +98,8 @@ int main() {
 
     Image im = {&imageTest,imageToVector(imageTest,image_size)};
 
-    cout<<"Essai perso (6):"<<
-    perceptronMonoLayer.tester(im,6.)<<endl;
+    cout << "Essai perso (6):" <<
+         perceptronMonoLayer.test(im, 6.) << endl;
 
 
     delete (neuronnes);
