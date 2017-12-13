@@ -64,15 +64,16 @@ int main() {
     vec_entrees_test.clear();
     vec_labels_test.clear();
 
-    auto *neuronnes = new std::vector<Neuron>;
+    std::vector<Neuron> neuronnes;
     for (int i = 0; i < 10; ++i) {
         ublas::vector<double> weigthN(image_size);
         randomizeVector(weigthN);
-        neuronnes->emplace_back(weigthN, seuil);
+        neuronnes.emplace_back(weigthN, seuil);
     }
+    neuronnes.clear();
 
 
-    PerceptronMonoLayer perceptronMonoLayer(*neuronnes);
+    PerceptronMonoLayer perceptronMonoLayer(neuronnes);
     perceptronMonoLayer.learn(vec_train,10);
     cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
