@@ -70,7 +70,6 @@ int main() {
         randomizeVector(weigthN);
         neuronnes.emplace_back(weigthN, seuil);
     }
-    neuronnes.clear();
 
 
     PerceptronMonoLayer perceptronMonoLayer(neuronnes);
@@ -79,6 +78,7 @@ int main() {
     cout << "lancement du test" << endl;
     perceptronMonoLayer.test(vec_test);
 
+    neuronnes.clear();
 
     cv::Mat imageTest = imread("../res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
 
