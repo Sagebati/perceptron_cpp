@@ -6,10 +6,13 @@
 #include <boost/numeric/ublas/operations.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <random>
-#include "reader.hpp"
-#include "PerceptronMonoLayer.hpp"
+#include "mnist/reader.hpp"
+#include "perceptron/PerceptronMonoLayer.hpp"
+#include "perceptron/act_funs.hpp"
+#include "perceptron/ItemNN.hpp"
 
 using namespace cv;
+using namespace boost;
 using namespace boost::numeric;
 using namespace std;
 
@@ -18,27 +21,13 @@ void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix);
 
 void randomizeVector(boost::numeric::ublas::vector<double> &vect);
 
-double (*sigmoide)(double) = [](double x) {
-    return 1 / (1 + exp(-x));
-};
 
-double supa0(double x) {
-    return x > 0 ? 1 : 0;
-};
-
-double sup255(double x ){
-    return x > 256./2. ? 1:0;
-}
-
-double (*seuil)(double) = sigmoide;
-
-
-ublas::vector<double> *imageToVector(cv::Mat const &mat, size_t const nbrPixels) {
-    auto *v = new ublas::vector<double>(nbrPixels);
-    for (size_t i = 0; i < nbrPixels; i++) {
+ublas::vector<double> imageToVector(cv::Mat const &mat) {
+    size_t nbPixels = mat.rows * mat.cols;
+    ublas::vector<double> v(nbPixels);
+    for (size_t i = 0; i < nbPixels; i++) {
         auto a = (double) mat.at<unsigned char>(i);
-        a = sup255(a);
-        v->insert_element(i, a);
+        v.insert_element(i, a>(255./2.)?1:0);
     }
     return v;
 }
@@ -46,6 +35,8 @@ ublas::vector<double> *imageToVector(cv::Mat const &mat, size_t const nbrPixels)
 int main() {
 
     using namespace boost::numeric::ublas;
+
+    double (*seuil)(double) = act_f::noActFun<double>;
 
 
     string filename = "../res/train-images-idx3-ubyte";
@@ -60,20 +51,18 @@ int main() {
     read_Mnist("../res/t10k-images-idx3-ubyte", vec_entrees_test);
     read_Mnist_Label("../res/t10k-labels-idx1-ubyte", vec_labels_test);
 
-//    cout<<vec_entrees.size()<<endl;
-//    cv::imshow("1st", vec_entrees[0]);
-//    cv::waitKey();
-
-    std::vector<Image> vecTrain;
-    for (cv::Mat &m : vec_entrees) {
-        Image image = {&m, imageToVector(m, image_size)};
-        vecTrain.push_back(image);
+    std::vector<ItemNN<double>> vec_train;
+    for (int i = 0; i < vec_entrees.size(); ++i) {
+        vec_train.emplace_back(vec_labels[i], vec_entrees[i], imageToVector);
     }
-    std::vector<Image> vecTest;
-    for (cv::Mat &m : vec_entrees_test) {
-        Image image = {&m, imageToVector(m, image_size)};
-        vecTest.push_back(image);
+    vec_entrees.clear();
+    vec_labels.clear();
+    std::vector<ItemNN<double>> vec_test;
+    for (int i = 0; i < vec_entrees_test.size(); ++i) {
+        vec_test.emplace_back(vec_labels_test[i], vec_entrees_test[i], imageToVector);
     }
+    vec_entrees_test.clear();
+    vec_labels_test.clear();
 
     auto *neuronnes = new std::vector<Neuron>;
     for (int i = 0; i < 10; ++i) {
@@ -83,28 +72,20 @@ int main() {
     }
 
 
-    PerceptronMonoLayer perceptronMonoLayer(*neuronnes, vecTrain, vec_labels);
-    perceptronMonoLayer.learn();
+    PerceptronMonoLayer perceptronMonoLayer(*neuronnes);
+    perceptronMonoLayer.learn(vec_train,10);
     cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
-    perceptronMonoLayer.test(vecTest, vec_labels_test);
+    perceptronMonoLayer.test(vec_test);
 
 
-    cv::Mat imageTest = imread("res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
+    cv::Mat imageTest = imread("../res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
 
-    Image im = {&imageTest,imageToVector(imageTest,image_size)};
+    ItemNN<double> itemNN(5,imageTest,imageToVector);
 
-    cout << "Essai perso (6):" <<
-         perceptronMonoLayer.test(im, 6.) << endl;
+    cout << "Essai perso (5):" <<(
+         perceptronMonoLayer.test(itemNN)? "true":"false") << endl;
 
-
-    delete (neuronnes);
-    for (const Image &toDel : vecTrain) {
-        delete (toDel.e);
-    }
-    for(const Image &toDel : vecTrain){
-        delete(toDel.e);
-    }
 
     return 0;
 }

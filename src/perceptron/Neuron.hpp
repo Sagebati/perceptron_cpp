@@ -9,22 +9,17 @@
 #include <vector>
 #include <boost/numeric/ublas/vector.hpp>
 
+
 class Neuron {
 private:
     boost::numeric::ublas::vector<double> weights;
     double gradient;
-
     double (*functionAct)(double);
 
 public:
     Neuron(const boost::numeric::ublas::vector<double> &weights, double (*functionAct)(double));
 
-    /**
-     *
-     * @param e
-     * @return the output of the neuron
-     */
-    double getOutput(boost::numeric::ublas::vector<double> const &e);
+    double getOutput(boost::numeric::ublas::vector<double> const &entries);
 
     const boost::numeric::ublas::vector<double> &getWeights() const;
 

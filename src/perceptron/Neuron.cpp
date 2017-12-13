@@ -13,17 +13,17 @@ Neuron::Neuron(const ublas::vector<double> &weights, double (*functionAct)(doubl
 
 /**
  * function that gives the output of the neuron on entry given
- * @param e vecotr of entrie
+ * @param entries vector of entries
  * @return the output
  */
-double Neuron::getOutput(boost::numeric::ublas::vector<double> const &e) {
-    if (weights.size() != e.size()) {
+double Neuron::getOutput(boost::numeric::ublas::vector<double> const &entries) {
+    if (weights.size() != entries.size()) {
         std::cerr << "Problem Neuron.getOutput"
                   << " size weigths : " << weights.size()
-                  << " size entri : " << e.size()
+                  << " size entri : " << entries.size()
                   << std::endl;
     }
-    double somme_pond = ublas::inner_prod(weights, e);
+    double somme_pond = ublas::inner_prod(weights, entries);
 
     return somme_pond/weights.size();
 }

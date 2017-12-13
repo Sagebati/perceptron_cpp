@@ -12,8 +12,6 @@ CTestTestfile.cmake
 # CMake
 cmake-build-debug/*
 cmake-build-release/*
-!/cmake-build-release/.gitkeep
-!/cmake-build-debug/.gitkeep
 
 #idea
 .idea/

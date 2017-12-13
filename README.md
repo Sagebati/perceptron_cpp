@@ -7,7 +7,7 @@ It is Cmake based.
 
 Dependencies
 -
-- Cmake
+- Cmake 3.9
 - OpenCV
 - The Boost library for ublas
 - C++11
@@ -21,7 +21,8 @@ Dependencies
 Compiling
 -
 For compiling just do 
-cmake . && make
+cd build/
+cmake ../ && make
 
 
 
