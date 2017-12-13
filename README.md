@@ -5,6 +5,11 @@ Programm for a project in CS. Commentaries are on french, but i will try to chan
 
 It is Cmake based.
 
+Running
+-
+- cd buil/
+- ./perceptron++ '[numofCycles]'
+
 Dependencies
 -
 - Cmake 3.9

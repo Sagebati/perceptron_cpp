@@ -4,6 +4,8 @@ project(perceptron++)
 find_package( OpenCV REQUIRED )
 find_package( Boost REQUIRED )
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
 
 add_executable(perceptron++ src/main.cpp src/mnist/reader.cpp src/mnist/reader.hpp src/nn/NeuralNetwork.cpp src/nn/NeuralNetwork.hpp

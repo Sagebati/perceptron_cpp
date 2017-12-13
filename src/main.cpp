@@ -32,9 +32,16 @@ ublas::vector<double> imageToVector(cv::Mat const &mat) {
     return v;
 }
 
-int main() {
+int main(int argc, char ** argv) {
 
     using namespace boost::numeric::ublas;
+
+    int numCycles;
+    if(argc > 1)
+        numCycles = atoi(argv[1]);
+    else
+        numCycles =25;
+
 
     double (*seuil)(double) = act_f::noActFun<double>;
 
@@ -73,7 +80,7 @@ int main() {
 
 
     PerceptronMonoLayer perceptronMonoLayer(neuronnes);
-    perceptronMonoLayer.learn(vec_train,1);
+    perceptronMonoLayer.learn(vec_train,numCycles);
     cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
     perceptronMonoLayer.test(vec_test);

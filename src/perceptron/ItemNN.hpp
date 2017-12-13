@@ -23,6 +23,7 @@ private:
 public:
     ItemNN(const double expected, const cv::Mat item, boost::numeric::ublas::vector<typeEntry> (*f_itemToVec)(const cv::Mat &)):expected( expected), mat_image(item), f_itemToVec(f_itemToVec) {
         entries.push_back(f_itemToVec(item));
+        //To present to the perceptron the images in all the orientations size uncomment this
 //        for (int i = 0; i < 3; ++i) {
 //            cv::Mat dst;
 //            cv::rotate(item, dst, cv::ROTATE_90_CLOCKWISE + 1);
