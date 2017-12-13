@@ -83,7 +83,7 @@ int main() {
 
     ItemNN<double> itemNN(5,imageTest,imageToVector);
 
-    cout << "Essai perso (5):" <<(
+    cout << "test with gimp image(5):" <<(
          perceptronMonoLayer.test(itemNN)? "true":"false") << endl;
 
 
