@@ -73,7 +73,7 @@ int main() {
 
 
     PerceptronMonoLayer perceptronMonoLayer(neuronnes);
-    perceptronMonoLayer.learn(vec_train,10);
+    perceptronMonoLayer.learn(vec_train,1);
     cout << "Fini d'learn" << endl;
     cout << "lancement du test" << endl;
     perceptronMonoLayer.test(vec_test);
