@@ -8,7 +8,7 @@ It is Cmake based.
 Running
 -
 - cd buil/
-- ./perceptron++ '[numofCycles]'
+- ./perceptron++ [numofCycles]
 
 Dependencies
 -
