@@ -20,10 +20,23 @@ public:
 
     void learn(std::vector<ItemNN<double>> const & items);
 
+    /**
+     *
+     * @param items set of learnin
+     * @param numCycles number of times we want to loop on the set
+     */
     void learn(std::vector<ItemNN<double>> const & items,size_t numCycles);
-
+    /**
+     * Function to test a set of images
+     * @param e
+     */
     void test(std::vector<ItemNN<double>> const &e);
 
+    /**
+     * Function to test one item
+     * @param e
+     * @return 1 if the was succefull
+     */
     bool test(ItemNN<double> const &e);
 
 //TODO void addBiais(size_t nbrBiais);

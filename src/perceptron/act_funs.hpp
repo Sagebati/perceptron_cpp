@@ -21,6 +21,12 @@ namespace act_f {
     };
 
 
+    /**
+     * function sup to 0
+     * @tparam type
+     * @param x
+     * @return 1 is x is sup to 0
+     */
     template<typename type>
     type supTo0(type x) {
         return x > 0 ? 1 : 0;

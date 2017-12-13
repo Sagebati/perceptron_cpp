@@ -11,14 +11,17 @@
 template<typename typeEntry>
 class ItemNN {
 private:
+    /**
+     * vector who contains all the set of the image
+     */
     std::vector<boost::numeric::ublas::vector<typeEntry>> entries;
-    cv::Mat const item;
+    cv::Mat const mat_image;
     typeEntry const expected;
 
     boost::numeric::ublas::vector<typeEntry> (*f_itemToVec)(const cv::Mat &);
 
 public:
-    ItemNN(const double expected, const cv::Mat item, boost::numeric::ublas::vector<typeEntry> (*f_itemToVec)(const cv::Mat &)):expected( expected), item(item), f_itemToVec(f_itemToVec) {
+    ItemNN(const double expected, const cv::Mat item, boost::numeric::ublas::vector<typeEntry> (*f_itemToVec)(const cv::Mat &)):expected( expected), mat_image(item), f_itemToVec(f_itemToVec) {
         entries.push_back(f_itemToVec(item));
 //        for (int i = 0; i < 3; ++i) {
 //            cv::Mat dst;
@@ -30,15 +33,16 @@ public:
 //        entries.push_back(f_itemToVec(dst));
     };
 
-
+    /**
+     * function that return the image without bieng rotated or flipped
+     * @return the vector of elements
+     */
     const boost::numeric::ublas::vector<typeEntry> &getEntry() const {
         return entries[0];
     }
-
     const cv::Mat &getItem() const {
-        return item;
+        return mat_image;
     }
-
     const std::vector<boost::numeric::ublas::vector<typeEntry>> &getVecEntries() const {
         return this->entries;
     }

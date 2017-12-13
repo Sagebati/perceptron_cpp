@@ -91,34 +91,6 @@ int main() {
 }
 
 /**
- * Générateur de droite 2D on lui passe un vecteur, et une valuer
- * et il retourne la valeur en fonction du vecteur
- * @param vecDroite
- * @param x
- * @return
- */
-double f(vector<double> vecDroite, double x) { //vecteur
-    return (vecDroite[1] * x) / -vecDroite[2];
-};
-
-/**
- * Fonction qui permet d'initialiser une matrice a des poids aléatoires
- * entre -1 et 1
- * @param vector à initialiser
- */
-void randomizeMatrix(boost::numeric::ublas::matrix<double> &matrix) {
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(-1, 1);
-
-    for (size_t i = 0; i < matrix.size1(); i++) {
-        for (size_t j = 0; j < matrix.size2(); j++) {
-            matrix(i, j) = dist(mt);
-        }
-    }
-}
-
-/**
  * Fonction qui permet d'initialiser un vecteur a des poids aléatoires
  * entre -1 et 1
  * @param vect à initialiser

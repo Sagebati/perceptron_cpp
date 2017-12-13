@@ -14,20 +14,26 @@ class Neuron {
 private:
     boost::numeric::ublas::vector<double> weights;
     double gradient;
+
     double (*functionAct)(double);
 
 public:
     Neuron(const boost::numeric::ublas::vector<double> &weights, double (*functionAct)(double));
 
+    /**
+     *
+     * @param entries
+     * @return the output of the neuron with the function
+     */
     double getOutput(boost::numeric::ublas::vector<double> const &entries);
+
+    void correctWeitghs(boost::numeric::ublas::vector<double> const &e, double result, double expected);
 
     const boost::numeric::ublas::vector<double> &getWeights() const;
 
     void setWeights(const boost::numeric::ublas::vector<double> &weights);
 
     void setFunctionAct(double (*functionAct)(double));
-
-    void correctWeitghs(boost::numeric::ublas::vector<double> const &e, double result, double expected);
 };
 
 
