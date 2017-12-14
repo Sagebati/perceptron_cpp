@@ -5,9 +5,16 @@ Programm for a project in CS. Commentaries are on french, but i will try to chan
 
 It is Cmake based.
 
+
+Compiling
+-
+For compiling just do: 
+- cd build/
+- cmake ../ && make
+
 Running
 -
-- cd buil/
+- cd build/
 - ./perceptron++ [numofCycles]
 
 Dependencies
@@ -17,17 +24,13 @@ Dependencies
 - The Boost library for ublas
 - C++11
 
- #####all this dependecies are installable on linux with the command line
+ all this dependecies are installable on linux with the command line
+ --
 - Ex: pacman -S opencv boost cmake
 > Arhclinux
 - Ex: sudo apt-get install cmake libopencv-dev libboost-all-dev
 >Debian/Ubuntu
 
-Compiling
--
-For compiling just do 
-cd build/
-cmake ../ && make
 
 
 
