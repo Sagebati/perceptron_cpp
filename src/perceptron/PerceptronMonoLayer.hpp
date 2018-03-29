@@ -18,14 +18,15 @@ private:
 public:
     explicit PerceptronMonoLayer(const std::vector<Neuron> &neurons);
 
-    void learn(std::vector<ItemNN<double>> const & items);
+    void learn(std::vector<ItemNN<double>> const &items);
 
     /**
      *
      * @param items set of learnin
      * @param numCycles number of times we want to loop on the set
      */
-    void learn(std::vector<ItemNN<double>> const & items,size_t numCycles);
+    void learn(std::vector<ItemNN<double>> const &items, size_t numCycles);
+
     /**
      * Function to test a set of images
      * @param e

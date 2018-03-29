@@ -18,6 +18,7 @@ NeuralNetwork::NeuralNetwork(const size_t nbrNeuronnes, const size_t couches, co
     this->fonctSeuil = funSeuil;
     initMatrix();
 }
+
 /**
  * Copy constructor
  * @param nn
@@ -38,6 +39,7 @@ NeuralNetwork::~NeuralNetwork() {
         delete (i);
     }
 }
+
 /**
  *Fais fonctionner le reseau avec une entrée donnée
  */
@@ -64,15 +66,15 @@ NeuralNetwork::propagerEtape(const ublas::vector<double> &e, const ublas::matrix
     return e2;
 }
 
-void NeuralNetwork::initMatrix(){
+void NeuralNetwork::initMatrix() {
     initMatrix(0.5);
 }
 
 void NeuralNetwork::initMatrix(double init) {
     for (ublas::matrix<double> *item : neuralNetwork) {
-        for(size_t i=0;i<item->size1();i++){
+        for (size_t i = 0; i < item->size1(); i++) {
             for (size_t j = 0; j < item->size2(); ++j) {
-                item->insert_element(i,j,init);
+                item->insert_element(i, j, init);
             }
         }
     }

@@ -47,7 +47,7 @@ void PerceptronMonoLayer::learn(std::vector<ItemNN<double>> const &items, size_t
                 outputs.clear();
             }
         }
-        double succes_rate = (correct * 1.0) / (items.size() * items[0].getVecEntries().size() ) * 100;
+        double succes_rate = (correct * 1.0) / (items.size() * items[0].getVecEntries().size()) * 100;
         succes_rates.push_back(succes_rate);
         std::cout << "success rate:\n" << succes_rate << std::endl;
     } while (succes_rates[++j] != succes_rates[j - 1] && j < numCycles);
@@ -75,7 +75,6 @@ bool PerceptronMonoLayer::test(ItemNN<double> const &e) {
     }
     return (intToVec(getIdMax(outputs)) == intToVec(e.getExpected()));
 }
-
 
 
 std::vector<double> intToVec(size_t x) {

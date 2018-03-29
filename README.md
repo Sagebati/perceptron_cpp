@@ -27,6 +27,8 @@ Dependencies
  all this dependecies are installable on linux with the command line
  --
 - Ex: pacman -S opencv boost cmake
+
+base-devel might be necessary
 > Arhclinux
 - Ex: sudo apt-get install cmake libopencv-dev libboost-all-dev
 >Debian/Ubuntu

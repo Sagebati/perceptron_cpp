@@ -25,7 +25,7 @@ double Neuron::getOutput(boost::numeric::ublas::vector<double> const &entries) {
     }
     double somme_pond = ublas::inner_prod(weights, entries);
 
-    return functionAct(somme_pond/weights.size());
+    return functionAct(somme_pond / weights.size());
 }
 
 
