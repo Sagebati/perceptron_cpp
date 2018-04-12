@@ -17,6 +17,9 @@ Running
 - cd build/
 - ./perceptron++ [numofCycles]
 
+NumOfcycle of learning of on the traning dataset
+when all the cycles are done we run on the test dataset
+
 Dependencies
 -
 - Cmake 3.9
@@ -26,7 +29,7 @@ Dependencies
 
  all this dependecies are installable on linux with the command line
  --
-- Ex: pacman -S opencv boost cmake
+- Ex: pacman -S opencv boost cmake gtkgltext hdf5
 
 base-devel might be necessary
 > Arhclinux
