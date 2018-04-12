@@ -33,7 +33,7 @@ Dependencies
 
 base-devel might be necessary
 > Arhclinux
-- Ex: sudo apt-get install cmake libopencv-dev libboost-all-dev
+- Ex: sudo apt-get install cmake libopencv-dev libboost-dev
 >Debian/Ubuntu
 
 
