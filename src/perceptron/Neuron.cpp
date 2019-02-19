@@ -20,7 +20,7 @@ double Neuron::getOutput(boost::numeric::ublas::vector<double> const &entries) {
     if (weights.size() != entries.size()) {
         std::cerr << "Problem Neuron.getOutput"
                   << " size weigths : " << weights.size()
-                  << " size entri : " << entries.size()
+                  << " size entries : " << entries.size()
                   << std::endl;
     }
     double somme_pond = ublas::inner_prod(weights, entries);
@@ -60,7 +60,7 @@ bool equalsBlas(ublas::vector<double> const &a, ublas::vector<double> const &b) 
  */
 void Neuron::correctWeitghs(ublas::vector<double> const &e, double const expected, double const result) {
     if (weights.size() != e.size()) {
-        std::cout << "problem ici" << std::endl;
+        std::cout << "vector don't have the same sizes." << std::endl;
     }
     this->setWeights(weights + (e * (this->gradient * (expected - result))));
 }

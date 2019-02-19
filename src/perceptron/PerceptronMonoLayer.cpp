@@ -3,7 +3,6 @@
 //
 
 #include <boost/numeric/ublas/io.hpp>
-#include <cv.hpp>
 #include "PerceptronMonoLayer.hpp"
 
 PerceptronMonoLayer::PerceptronMonoLayer(const std::vector<Neuron> &neurons) : neurons(neurons) {}

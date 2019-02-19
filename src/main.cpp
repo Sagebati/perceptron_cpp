@@ -1,6 +1,7 @@
 #include <iostream>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/operations.hpp>
@@ -81,13 +82,13 @@ int main(int argc, char ** argv) {
 
     PerceptronMonoLayer perceptronMonoLayer(neuronnes);
     perceptronMonoLayer.learn(vec_train,numCycles);
-    cout << "Fini d'learn" << endl;
-    cout << "lancement du test" << endl;
+    cout << "End of learning" << endl;
+    cout << "Begin tests" << endl;
     perceptronMonoLayer.test(vec_test);
 
     neuronnes.clear();
 
-    cv::Mat imageTest = imread("../res/test.png",CV_LOAD_IMAGE_GRAYSCALE);
+    cv::Mat imageTest = imread("../res/test.png",cv::ImreadModes::IMREAD_GRAYSCALE);
 
     ItemNN<double> itemNN(5,imageTest,imageToVector);
 
