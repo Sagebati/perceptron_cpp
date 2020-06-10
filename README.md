@@ -1,10 +1,9 @@
 # Perceptron_cpp
-Programm for a project in CS. Commentaries are on french, but i will try to change that on the future.
+Programm for a project in CS. Comments are on french.
 
 > The objectif of this programm is to learn manuscrite writing from the mnist database.
 
 It is Cmake based.
-
 
 Compiling
 -
@@ -29,12 +28,14 @@ Dependencies
 
  all this dependecies are installable on linux with the command line
  --
-- Ex: pacman -S opencv boost cmake gtkgltext hdf5
+ > Archlinux
+- pacman -S opencv boost cmake gtkgltext hdf5
 
+
+> Debian/Ubuntu
 base-devel might be necessary
-> Arhclinux
-- Ex: sudo apt-get install cmake libopencv-dev libboost-dev
->Debian/Ubuntu
+- sudo apt-get install cmake libopencv-dev libboost-dev
+
 
 
 
